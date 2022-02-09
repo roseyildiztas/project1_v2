@@ -1,6 +1,6 @@
 # AWS Three-tier Architecture Using Terraform
 
-This project building a three-tier network configuration in AWS.We will create a total of 46 AWS resources through Terraform, including;
+This project builds a three-tier network configuration in AWS.We will create a total of 46 AWS resources through Terraform, including;
 
 * Creates a VPC provided in the region 
 * Creates subnets for each layer
