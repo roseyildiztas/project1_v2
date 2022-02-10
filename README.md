@@ -1,8 +1,9 @@
 # AWS Three-tier Architecture Using Terraform
 
-This project builds a three-tier network configuration in AWS.We will create a total of 46 AWS resources through Terraform, including;
+This project is used to automate the process of a three tier architecture in AWS.
+We will create a total of 46 AWS resources through Terraform, including;
 
-* Creates a VPC provided in the region 
+* Creates a VPC with the CIDR blocks provided in the region 
 * Creates subnets for each layer
 * Creates an IGW and NAT gateway
 * Creates Route tables
@@ -11,17 +12,21 @@ This project builds a three-tier network configuration in AWS.We will create a t
 * EC2 instances for webservers
 * Application load balancer
 
+## Architecture
+![Updated_diagram]https://drive.google.com/drive/folders/1x90RXp6580xV7I1w5Rsuu--DsSJ_leHy
+
+
 ## Prerequisites
 
 1. The AWS CLI configured with AWS account credentials, and a familiarity with AWS cloud architecture
-2. Terraform installed on your home system
+2. Terraform locally installed 
 3. A text editor such as Atom, Visual Studio Code, or PyCharm, with the Terraform plug-in installed
-4. Create a new directory for the four Terraform source files we will be working with: provider.tf,vpc.tf, asg.tf, db.tf, variable.tf and wordpress.sh
+4. A source code management tool such as github,
+5. Create a new directory for the four Terraform source files we will be working with: provider.tf,vpc.tf, asg.tf, db.tf, variable.tf and wordpress.sh
 
-## provider.tf
+## provider.tf 
 
 AWS will be our plug-in provider, so the top of provider.tf should include:
-
 ```
 provider "aws" {
   region = var.region
@@ -29,7 +34,8 @@ provider "aws" {
 ```
 ## vpc.tf
 
-This code will create a VPC along with 3 Public and 6 Private subnets,Route Tables to configure traffic through IGW to Public Subnets and NG to Private Subnets and security grups for loadbalancer, database and server
+This code will create a VPC along with 3 Public and 6 Private subnets, IGW to Public Subnets and NG to Private Subnets. Route Tables to configure traffic through IGW to Public Subnets and NG to Private Subnets and security grups. By configuring security grups which will set of firewall rules for loadbalancer, database and server. It will open neccesary ports to control the traffic to your load balancer through your VPC.
+
 
 ```
 data "aws_availability_zones" "available" {}
@@ -82,7 +88,8 @@ module "db_sg" {
 ```
 ## asg.tf
 
-Launch template along with ASG and ALB and Security grouop for database, load balancer and webserver will be created
+Load Balancer works with Launh templeted Auto Scaling to distribute incoming HTTP traffic across your targets to servers (healthy Amazon EC2 instances), database. This increases the scalability and availability of your application. You can enable  Load Balancer within multiple Availability Zones to increase the fault tolerance of your applications. 
+Please make sure modify correct path of user_data under webserver aws launch templete resources.
 
 ```   
 data "aws_ami" "centos" {
@@ -195,6 +202,7 @@ resource "aws_db_instance" "default" {
 ```
 
 ## variable.tf
+ Please alter desired region on "default region variable" 
 
 ```
 variable "namespace" {
@@ -220,10 +228,22 @@ variable "cluster_engine" {
 ## Initilazing the Terraform
 
 To install and create the resources:
+1-Before creating all so you need to initialise Terraform which needs to be done only once in a folder.Initialise Terraform with the following command:
 
 ```
 terraform init
-terraform apply 
+```
+You can check any syntax by using:
+
+```
+terraform validate 
+```
+
+you can see all changes on terraform plan then create with terraform apply commands:
+
+```
+terraform plan  --auto-approve
+terraform apply --auto-approve
 
 ```
 
